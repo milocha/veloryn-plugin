@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8" />
+<title>{{ quote.number|default("Veloryn — Oferta handlowa") }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    --ink: #0B1220;
+    --ink-2: #1F2937;
+    --muted: #6B7280;
+    --line: #E5E7EB;
+    --bg: #FFFFFF;
+    --bg-soft: #F8FAFC;
+    --brand: #4F46E5;     /* indigo-600 */
+    --brand-2: #7C3AED;   /* violet-600 */
+    --brand-ink: #312E81; /* indigo-900 */
+    --accent: #22D3EE;    /* cyan-400 */
+    --ok: #10B981;
+  }
+
+  /* ---------- Print / page setup ---------- */
+  @page { size: A4; margin: 0; }
+  html, body { background: #EEF2F7; }
+  body {
+    margin: 0;
+    font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+  .page {
+    width: 210mm;
+    height: 297mm;
+    margin: 16px auto;
+    background: var(--bg);
+    box-shadow: 0 20px 50px rgba(15, 23, 42, .08);
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+    break-after: page;
+    box-sizing: border-box;
+  }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+
+  @media print {
+    html, body { background: #fff; }
+    .page { margin: 0; box-shadow: none; }
+  }
+
+  /* ---------- Typography ---------- */
+  h1, h2, h3, h4 { margin: 0; letter-spacing: -0.01em; color: var(--ink); }
+  h1 { font-size: 44px; font-weight: 800; line-height: 1.05; }
+  h2 { font-size: 26px; font-weight: 700; line-height: 1.15; }
+  h3 { font-size: 16px; font-weight: 700; }
+  h4 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  p  { margin: 0 0 10px; line-height: 1.55; color: var(--ink-2); font-size: 12.5px; }
+  small { color: var(--muted); }
+  .mono { font-variant-numeric: tabular-nums; }
+
+  /* ---------- Brand mark ---------- */
+  .logo {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-weight: 800; font-size: 18px; letter-spacing: -0.01em;
+  }
+  .logo-mark {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+    box-shadow: inset 0 -6px 12px rgba(255,255,255,.18), 0 4px 10px rgba(79,70,229,.35);
+    position: relative;
+  }
+  .logo-mark::after{
+    content:""; position:absolute; inset:6px;
+    border: 2px solid rgba(255,255,255,.85); border-right-color: transparent; border-radius: 50%;
+    transform: rotate(35deg);
+  }
+  .logo .v { color: var(--ink); }
+  .logo--light .v, .logo--light { color: #fff; }
+
+  /* ---------- Page header / footer ---------- */
+  .page-pad { padding: 22mm 18mm; }
+  .pg-head {
+    display:flex; align-items:center; justify-content: space-between;
+    padding: 10mm 18mm 0;
+  }
+  .pg-foot {
+    position: absolute; left: 18mm; right: 18mm; bottom: 10mm;
+    display:flex; align-items:center; justify-content: space-between;
+    color: var(--muted); font-size: 10px; letter-spacing: .04em;
+    border-top: 1px solid var(--line); padding-top: 6mm;
+  }
+  .pg-num {
+    display:inline-flex; align-items:center; gap:6px;
+    font-weight: 700; color: var(--ink);
+  }
+  .pg-num .dot { width:6px; height:6px; border-radius:50%; background: var(--brand); }
+
+  /* ============================================================
+     PAGE 1 — Cover
+     ============================================================ */
+  .cover {
+    background:
+      radial-gradient(1100px 700px at 85% -10%, rgba(124,58,237,.55), transparent 60%),
+      radial-gradient(900px 600px at -10% 110%, rgba(34,211,238,.35), transparent 60%),
+      linear-gradient(160deg, #0B1220 0%, #1E1B4B 55%, #312E81 100%);
+    color: #fff;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 18mm;
+  }
+  .cover::before{
+    content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 28px 28px, 28px 28px;
+    mask-image: radial-gradient(700px 500px at 70% 30%, #000 30%, transparent 75%);
+    pointer-events:none;
+  }
+  .cover-top { display:flex; align-items:center; justify-content: space-between; position:relative; z-index:1; }
+  .cover-top .meta {
+    font-size: 11px; letter-spacing:.18em; text-transform: uppercase; color: rgba(255,255,255,.7);
+  }
+  .cover-body { position: relative; z-index:1; max-width: 150mm; }
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:8px;
+    font-size: 11px; letter-spacing:.22em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 18px;
+  }
+  .eyebrow::before{ content:""; width:24px; height:1px; background: var(--accent); display:inline-block; }
+  .cover h1 { color:#fff; font-size: 60px; line-height: 1; font-weight: 800; }
+  .cover h1 em { font-style: normal; background: linear-gradient(90deg, #A5B4FC, #67E8F9); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .cover .tagline { color: rgba(255,255,255,.78); font-size: 16px; max-width: 130mm; margin-top: 18px; line-height: 1.5; }
+  .cover-foot {
+    position: relative; z-index:1;
+    display:grid; grid-template-columns: repeat(3, 1fr); gap: 12mm;
+    border-top: 1px solid rgba(255,255,255,.18); padding-top: 10mm;
+  }
+  .cover-foot .lbl { font-size: 10px; letter-spacing:.2em; text-transform:uppercase; color: rgba(255,255,255,.55); margin-bottom: 6px; }
+  .cover-foot .val { font-size: 14px; font-weight: 600; color:#fff; }
+
+  /* ============================================================
+     PAGE 2 — List + dane
+     ============================================================ */
+  .grid-2 { display:grid; grid-template-columns: 1.2fr 1fr; gap: 14mm; }
+  .letter h2 { margin-bottom: 10px; }
+  .letter .from-date { color: var(--muted); font-size: 12px; margin-bottom: 14px; }
+  .letter p { font-size: 12.5px; }
+  .signature { margin-top: 18px; display:flex; align-items:center; gap: 12px; }
+  .sig-avatar {
+    width: 56px; height:56px; border-radius:50%;
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+    color:#fff; display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size: 18px; box-shadow: 0 6px 14px rgba(79,70,229,.35);
+  }
+  .sig-name { font-weight: 700; }
+  .sig-role { color: var(--muted); font-size: 11px; }
+
+  .info-card {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .info-card h4 { margin-bottom: 6px; color: var(--brand-ink); }
+  .kv { display:grid; grid-template-columns: 28mm 1fr; row-gap: 4px; column-gap: 8px; font-size: 12px; }
+  .kv dt { color: var(--muted); }
+  .kv dd { margin: 0; color: var(--ink); font-weight: 500; }
+
+  .meta-strip {
+    margin-top: 8mm;
+    display:grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  }
+  .meta-strip .cell {
+    border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px;
+  }
+  .meta-strip .cell .lbl { font-size: 10px; letter-spacing:.18em; text-transform:uppercase; color: var(--muted); }
+  .meta-strip .cell .val { font-weight: 700; font-size: 14px; margin-top: 2px; color: var(--ink); }
+  .pill {
+    display:inline-block; padding: 3px 10px; border-radius: 999px;
+    background: rgba(79,70,229,.08); color: var(--brand); font-size: 11px; font-weight: 600;
+    border: 1px solid rgba(79,70,229,.18);
+  }
+
+  /* ============================================================
+     PAGE 3 — Moduły
+     ============================================================ */
+  .section-head { display:flex; align-items:flex-end; justify-content: space-between; margin-bottom: 6mm; }
+  .section-head .lead { max-width: 110mm; color: var(--muted); font-size: 12.5px; line-height: 1.5; }
+  .modules {
+    display:grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+  }
+  .mod {
+    border: 1px solid var(--line); border-radius: 10px; padding: 7px 9px;
+    background: #fff; position: relative; overflow:hidden;
+  }
+  .mod::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:3px;
+    background: linear-gradient(180deg, var(--brand), var(--brand-2));
+    border-radius: 3px 0 0 3px;
+  }
+  .mod .ico {
+    width: 22px; height: 22px; border-radius: 6px; margin-bottom: 4px;
+    background: linear-gradient(135deg, rgba(79,70,229,.12), rgba(124,58,237,.12));
+    color: var(--brand); display:flex; align-items:center; justify-content:center;
+    font-weight: 800; font-size: 11px;
+  }
+  .mod h3 { font-size: 12px; margin-bottom: 2px; }
+  .mod p  { font-size: 10px; color: var(--muted); margin: 0; line-height: 1.35; }
+  .mod .tag {
+    position:absolute; top: 8px; right: 8px; font-size: 9px; letter-spacing:.12em;
+    text-transform: uppercase; padding: 2px 6px; border-radius: 999px;
+    background: rgba(34,211,238,.12); color: #0E7490; border: 1px solid rgba(34,211,238,.3);
+  }
+  .mod .tag.soon { background: rgba(245,158,11,.10); color: #B45309; border-color: rgba(245,158,11,.3); }
+
+  .why {
+    margin-top: 5mm; border-top: 1px solid var(--line); padding-top: 4mm;
+    display:grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  }
+  .why .item .num {
+    font-size: 20px; font-weight: 800; color: var(--brand);
+    font-variant-numeric: tabular-nums;
+  }
+  .why .item .lbl { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  /* ============================================================
+     PAGE 4 — Specyfikacja kosztów
+     ============================================================ */
+  .cost-section { margin-top: 8mm; }
+  .cost-section h3 {
+    display:inline-flex; align-items:center; gap: 8px;
+    background: linear-gradient(135deg, var(--brand-ink), var(--brand));
+    color:#fff; padding: 8px 14px; border-radius: 10px;
+    font-size: 13px; letter-spacing:.02em;
+  }
+  .cost-section h3 .badge {
+    background: rgba(255,255,255,.18); padding: 2px 8px; border-radius: 999px; font-size: 10px;
+  }
+  table.cost {
+    width: 100%; border-collapse: separate; border-spacing: 0;
+    margin-top: 8px; font-size: 12px;
+    border: 1px solid var(--line); border-radius: 12px; overflow:hidden;
+  }
+  table.cost thead th {
+    background: var(--bg-soft); text-align: left;
+    font-size: 10.5px; letter-spacing:.1em; text-transform: uppercase;
+    color: var(--muted); padding: 9px 12px; border-bottom: 1px solid var(--line);
+  }
+  table.cost tbody td {
+    padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top;
+  }
+  table.cost tbody tr:last-child td { border-bottom: none; }
+  table.cost td.num, table.cost th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  table.cost tfoot td {
+    padding: 11px 12px; background: #0B1220; color:#fff; font-weight:700;
+  }
+  table.cost tfoot td.num { font-size: 14px; }
+
+  .price-grid {
+    display:grid; grid-template-columns: 1.2fr 1fr; gap: 12px;
+    margin-top: 8px;
+  }
+  .note {
+    border-left: 3px solid var(--brand);
+    background: var(--bg-soft);
+    padding: 10px 12px; border-radius: 8px; font-size: 11.5px; color: var(--ink-2);
+  }
+  .note b { color: var(--brand-ink); }
+
+  table.regr {
+    width: 100%; border-collapse: separate; border-spacing: 0;
+    font-size: 12px;
+    border: 1px solid var(--line); border-radius: 12px; overflow:hidden;
+  }
+  table.regr thead th {
+    background: linear-gradient(180deg, #F1F5F9, #E2E8F0);
+    text-align: left; padding: 10px 12px; font-size: 10.5px;
+    letter-spacing:.1em; text-transform: uppercase; color: var(--ink-2);
+    border-bottom: 1px solid var(--line);
+  }
+  table.regr td { padding: 10px 12px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+  table.regr tr:last-child td { border-bottom: none; }
+  table.regr td.num, table.regr th.num { text-align: right; }
+  table.regr tr.hi td { background: rgba(79,70,229,.05); font-weight: 700; color: var(--brand-ink); }
+  .savings { color: var(--ok); font-weight: 600; }
+
+  /* small helpers */
+  .row { display:flex; align-items:center; justify-content: space-between; gap: 12px; }
+  .stack-sm > * + * { margin-top: 6px; }
+  .muted { color: var(--muted); }
+  .mt-8 { margin-top: 8mm; }
+  .mt-6 { margin-top: 6mm; }
+  .mt-4 { margin-top: 4mm; }
+</style>
+</head>
+<body>
+
+<!-- =================================================================
+     PAGE 1 — COVER
+     ================================================================= -->
+<section class="page cover">
+  <div class="cover-top">
+    <div class="logo logo--light">
+      <span class="logo-mark"></span>
+      <span>VELORYN</span>
+    </div>
+    <div class="meta">Oferta handlowa · {{ "now"|date("Y") }}</div>
+  </div>
+
+  <div class="cover-body">
+    <div class="eyebrow">Enterprise OS · On-premise first</div>
+    <h1>Oferta wdrożenia<br/>systemu <em>Veloryn</em></h1>
+    <p class="tagline">
+      Jeden system operacyjny dla całej firmy — dokumenty, sprawy, faktury,
+      poczta, kalendarz, workflow, helpdesk i CRM w jednym miejscu, na Twoim serwerze.
+    </p>
+  </div>
+
+  <div class="cover-foot">
+    <div>
+      <div class="lbl">Klient</div>
+      <div class="val">{{ client.name|default("[Nazwa klienta]") }}</div>
+    </div>
+    <div>
+      <div class="lbl">Numer oferty</div>
+      <div class="val">{{ quote.number|default("OF/__/____") }}</div>
+    </div>
+    <div>
+      <div class="lbl">Data</div>
+      <div class="val">{{ quote.quote_date|date("d.m.Y")|default("__.__.____") }}</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- =================================================================
+     PAGE 2 — LIST + DANE
+     ================================================================= -->
+<section class="page">
+  <div class="pg-head">
+    <div class="logo"><span class="logo-mark"></span><span class="v">VELORYN</span></div>
+    <div class="muted" style="font-size:11px; letter-spacing:.16em; text-transform:uppercase;">List wprowadzający</div>
+  </div>
+
+  <div class="page-pad">
+    <div class="grid-2">
+      <div class="letter">
+        <div class="from-date">{{ seller.address.city|default("Warszawa") }}, {{ quote.quote_date|date("d.m.Y")|default("__.__.____") }}</div>
+        <h2>Szanowni Państwo,</h2>
+        <p style="margin-top:14px;">
+          przedstawiamy ofertę wdrożenia <b>systemu Veloryn</b> — kompleksowej
+          platformy klasy Enterprise OS, która zastępuje rozproszone narzędzia (M365,
+          Salesforce, Slack, DMS, helpdesk) <b>jednym, spójnym środowiskiem pracy</b>
+          uruchamianym na Państwa infrastrukturze.
+        </p>
+        <p>
+          Oferta obejmuje: licencje użytkowników w modelu abonamentowym,
+          dedykowany serwer aplikacyjny w modelu usługi zarządzanej oraz prace
+          wdrożeniowe (instalacja, migracja danych, integracje, szkolenia).
+        </p>
+        <p>
+          Zaproponowany model cenowy jest <b>regresywny</b> — im więcej
+          użytkowników, tym niższa stawka jednostkowa. Szczegóły kalkulacji znajdą
+          Państwo na stronie 4.
+        </p>
+        <p>
+          W razie pytań pozostajemy do Państwa dyspozycji. Oferta zachowuje
+          ważność do dnia <b>{{ quote.valid_until|date("d.m.Y")|default("__.__.____") }}</b>.
+        </p>
+
+        <div class="signature">
+          <div class="sig-avatar">{{ generated_by.initials|default("VK") }}</div>
+          <div>
+            <div class="sig-name">{{ generated_by.name|default("[Imię i nazwisko]") }}</div>
+            <div class="sig-role">{{ seller.name|default("Veloryn") }}</div>
+          </div>
+        </div>
+      </div>
+
+      <aside>
+        <div class="info-card">
+          <h4>Dane oferenta</h4>
+          <dl class="kv">
+            <dt>Firma</dt><dd>{{ seller.legal_name|default("Veloryn sp. z o.o.") }}</dd>
+            <dt>Adres</dt><dd>{{ seller.address|default("[ul., kod, miasto]") }}</dd>
+            <dt>NIP</dt><dd class="mono">{{ seller.nip|default("[___-___-__-__]") }}</dd>
+            <dt>REGON</dt><dd class="mono">{{ seller.regon|default("[_________]") }}</dd>
+          </dl>
+        </div>
+
+        <div class="info-card">
+          <h4>Osoba kontaktowa</h4>
+          <dl class="kv">
+            <dt>Imię i nazwisko</dt><dd>{{ contact_person.first_name|default("") }} {{ contact_person.last_name|default("[___]") }}</dd>
+            <dt>E-mail</dt><dd>{{ contact_person.email|default("[___]") }}</dd>
+            <dt>Telefon</dt><dd class="mono">{{ contact_person.phone|default("+48 ___ ___ ___") }}</dd>
+          </dl>
+        </div>
+
+        <div class="info-card">
+          <h4>Klient</h4>
+          <dl class="kv">
+            <dt>Firma</dt><dd>{{ client.name|default("[Nazwa klienta]") }}</dd>
+            <dt>NIP</dt><dd class="mono">{{ client.nip|default("[___]") }}</dd>
+          </dl>
+        </div>
+      </aside>
+    </div>
+
+    <div class="meta-strip">
+      <div class="cell"><div class="lbl">Numer oferty</div><div class="val">{{ quote.number|default("OF/__/____") }}</div></div>
+      <div class="cell"><div class="lbl">Termin ważności</div><div class="val">{{ quote.valid_until|date("d.m.Y")|default("__.__.____") }}</div></div>
+      <div class="cell"><div class="lbl">Liczba użytkowników</div><div class="val">{{ quote.meta.user_count|default("___") }}</div></div>
+    </div>
+  </div>
+
+  <div class="pg-foot">
+    <span>Veloryn sp. z o.o. · Oferta handlowa · Dokument poufny</span>
+    <span class="pg-num"><span class="dot"></span>02 / 04</span>
+  </div>
+</section>
+
+
+<!-- =================================================================
+     PAGE 3 — MODUŁY
+     ================================================================= -->
+<section class="page">
+  <div class="pg-head">
+    <div class="logo"><span class="logo-mark"></span><span class="v">VELORYN</span></div>
+    <div class="muted" style="font-size:11px; letter-spacing:.16em; text-transform:uppercase;">Zakres systemu</div>
+  </div>
+
+  <div class="page-pad">
+    <div class="section-head">
+      <div>
+        <h2>Moduły Veloryn</h2>
+        <div class="lead mt-4">
+          Modułowa architektura — uruchamiacie tylko to, czego potrzebujecie.
+          Wszystko działa na jednej bazie użytkowników, jednym ACL i jednym audit
+          trailu, na Państwa serwerze.
+        </div>
+      </div>
+      <div class="muted" style="font-size:11px;">
+        <span class="pill">16 modułów dostępnych</span>
+        &nbsp;<span class="pill" style="background:rgba(245,158,11,.08); color:#B45309; border-color:rgba(245,158,11,.3);">2 w przygotowaniu</span>
+      </div>
+    </div>
+
+    <div class="modules">
+      <!-- kluczowe (kolejność biznesowa) -->
+      <div class="mod"><span class="tag">live</span><div class="ico">ERP</div><h3>ERP</h3><p>Faktury, sprzedaż, magazyn z pełną integracją KSeF — w jednym module.</p></div>
+      <div class="mod"><span class="tag">live</span><div class="ico">CR</div><h3>CRM</h3><p>Widok 360° klienta z pełną historią współpracy.</p></div>
+      <div class="mod"><span class="tag">live</span><div class="ico">📅</div><h3>Kalendarz</h3><p>Terminy w kontekście spraw, przypomnienia wspierające SLA.</p></div>
+      <div class="mod"><span class="tag">live</span><div class="ico">▶</div><h3>Spotkania online</h3><p>Wideokonferencje na wewnętrznym serwerze LiveKit.</p></div>
+
+      <!-- pozostałe live -->
+      <div class="mod"><span class="tag">live</span><div class="ico">DM</div><h3>Dokumenty</h3><p>Hub dokumentów, metadane, wersjonowanie, OCR, e-podpis.</p></div>
+      <div class="mod"><span class="tag">live</span><div class="ico">@</div><h3>Poczta 360°</h3><p>@wzmianki zamiast forwardów, wspólne szkice, tablica zespołu.</p></div>
+      <div class="mod"><span class="tag">live</span><div class="ico">⚙</div><h3>Workflow</h3><p>Zaawansowany silnik reguł — procesy bez programowania.</p></div>
+      <div class="mod"><span class="tag">live</span><div class="ico">HR</div><h3>Urlopy &amp; Delegacje</h3><p>Wnioski urlopowe, RCP, delegacje krajowe i zagraniczne.</p></div>
+      <div class="mod"><span class="tag">live</span><div class="ico">UM</div><h3>Umowy</h3><p>Rejestr umów z podpisem elektronicznym Autenti. Generowanie umów w formacie DOCX.</p></div>
+      <div class="mod"><span class="tag">live</span><div class="ico">HD</div><h3>Helpdesk</h3><p>Tikety, SLA, eskalacje, raportowanie.</p></div>
+      <div class="mod"><span class="tag">live</span><div class="ico">OO</div><h3>OnlyOffice</h3><p>Edycja Word, Excel, PowerPoint bez licencji Microsoft.</p></div>
+      <div class="mod"><span class="tag">live</span><div class="ico">☁</div><h3>CloudFile</h3><p>Własny OneDrive oparty o S3 / MinIO. Synchronizacja plików na Mac, Windows i Linux.</p></div>
+      <div class="mod"><span class="tag">live</span><div class="ico">CW</div><h3>Collab Workspace</h3><p>Portal dla współpracowników bez VPN i pełnego konta.</p></div>
+      <div class="mod"><span class="tag">live</span><div class="ico">📱</div><h3>Aplikacja mobilna</h3><p>Poczta, kalendarz i akceptacje workflow (PWA).</p></div>
+      <div class="mod"><span class="tag">live</span><div class="ico">🌐</div><h3>Portal</h3><p>Osobna domena dla klientów i partnerów.</p></div>
+
+      <div class="mod"><span class="tag">live</span><div class="ico">OF</div><h3>Generowanie Ofert</h3><p>Tworzenie i wysyłka ofert handlowych w PDF i DOCX wprost z systemu.</p></div>
+
+      <!-- planowane -->
+      <div class="mod"><span class="tag soon">soon</span><div class="ico">$</div><h3>Budżetowanie</h3><p>Budżety projektów CRM i wnioski zakupowe.</p></div>
+      <div class="mod"><span class="tag soon">soon</span><div class="ico">AI</div><h3>AI Assistant</h3><p>Wyszukiwanie semantyczne, streszczenia spraw, copilot procesowy.</p></div>
+    </div>
+
+    <div class="why">
+      <div class="item"><div class="num">16+</div><div class="lbl">modułów w jednym systemie</div></div>
+      <div class="item"><div class="num">100%</div><div class="lbl">kontroli danych on‑premise</div></div>
+      <div class="item"><div class="num">5</div><div class="lbl">języków interfejsu (PL/EN/CS/UK/ES)</div></div>
+      <div class="item"><div class="num">∞</div><div class="lbl">audit trail każdej operacji</div></div>
+    </div>
+  </div>
+
+  <div class="pg-foot">
+    <span>Veloryn sp. z o.o. · Oferta handlowa · Dokument poufny</span>
+    <span class="pg-num"><span class="dot"></span>03 / 04</span>
+  </div>
+</section>
+
+
+<!-- =================================================================
+     PAGE 4 — SPECYFIKACJA KOSZTÓW
+     ================================================================= -->
+<section class="page">
+  <div class="pg-head">
+    <div class="logo"><span class="logo-mark"></span><span class="v">VELORYN</span></div>
+    <div class="muted" style="font-size:11px; letter-spacing:.16em; text-transform:uppercase;">Specyfikacja kosztów</div>
+  </div>
+
+  <div class="page-pad">
+    <h2>Kalkulacja</h2>
+    <p class="muted" style="margin-top:4px; font-size:12px;">
+      Wszystkie kwoty podane w PLN, ceny netto. Abonament rozliczany miesięcznie,
+      wdrożenie — jednorazowo wg harmonogramu prac.
+    </p>
+
+    <!-- =========== A. Licencje (abonament) =========== -->
+    <div class="cost-section">
+      <h3>A. Licencje + serwer (usługa) <span class="badge">abonament miesięczny</span></h3>
+
+      <div class="price-grid">
+        <table class="cost">
+          <thead>
+            <tr>
+              <th>Pozycja</th>
+              <th class="num">Ilość</th>
+              <th class="num">Stawka</th>
+              <th class="num">Wartość</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in quote.items_by_category['LIC'] ?? [] %}
+            <tr>
+              <td>
+                <b>{{ item.product_name }}</b>
+                {% if item.description %}<br/><small>{{ item.description }}</small>{% endif %}
+              </td>
+              <td class="num">{{ item.quantity|number_format(0, ",", " ") }} {{ item.unit|default("szt.") }}</td>
+              <td class="num">{{ item.unit_price|number_format(2, ",", " ") }} zł</td>
+              <td class="num">{{ item.line_total|number_format(2, ",", " ") }} zł</td>
+            </tr>
+            {% endfor %}
+            {% for item in quote.items_by_category['SER'] ?? [] %}
+            <tr>
+              <td>
+                <b>{{ item.product_name }}</b>
+                {% if item.description %}<br/><small>{{ item.description }}</small>{% endif %}
+              </td>
+              <td class="num">{{ item.quantity|number_format(0, ",", " ") }} {{ item.unit|default("szt.") }}</td>
+              <td class="num">{{ item.unit_price|number_format(2, ",", " ") }} zł</td>
+              <td class="num">{{ item.line_total|number_format(2, ",", " ") }} zł</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3">Razem (miesięcznie)</td>
+              <td class="num">{{ ((quote.totals.by_category['LIC'].total ?? 0) + (quote.totals.by_category['SER'].total ?? 0))|number_format(2, ",", " ") }} zł</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <!-- =========== Cennik regresyjny =========== -->
+        <div>
+          <table class="regr">
+            <thead>
+              <tr>
+                <th>Paczka userów</th>
+                <th class="num">Cena/user</th>
+                <th class="num">Razem (cała paczka)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% set user_count = quote.meta.user_count|default(0)|number_format(0, "", "") %}
+              {% for tier in pricing.tier_table ?? [] %}
+              <tr{% if pricing.regressive_breakdown is not null and tier.min <= user_count and user_count <= tier.max %} class="hi"{% endif %}>
+                <td>{{ tier.min }} – {{ tier.max }}</td>
+                <td class="num">{{ tier.unit_price|number_format(2, ",", " ") }} zł</td>
+                <td class="num">{{ tier.package_total|number_format(2, ",", " ") }} zł</td>
+              </tr>
+              {% else %}
+              <tr><td>1 – 20</td><td class="num">120,00 zł</td><td class="num">2 400,00 zł</td></tr>
+              <tr><td>21 – 40</td><td class="num">80,00 zł</td><td class="num">+ 1 600,00 zł</td></tr>
+              <tr><td>41 – 60</td><td class="num">50,00 zł</td><td class="num">+ 1 000,00 zł</td></tr>
+              <tr><td>61 – 80</td><td class="num">30,00 zł</td><td class="num">+ 600,00 zł</td></tr>
+              <tr><td>81 – 100</td><td class="num">20,00 zł</td><td class="num">+ 400,00 zł</td></tr>
+              <tr><td>powyżej 100</td><td class="num">—</td><td class="num">wycena indywidualna</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          <div class="note mt-4">
+            <b>Jak to działa.</b> Cennik jest progresywno‑paczkowy: kolejne 20 użytkowników
+            jest tańsze, ale paczka 21–40 nie obniża ceny pierwszych 20.
+            {% if pricing.total_monthly is not null %}
+            Kalkulacja dla <b>{{ quote.meta.user_count|default("___") }} userów</b>:
+            łącznie <b>{{ pricing.total_monthly|number_format(2, ",", " ") }} zł/mies.</b>
+            (śr. <b>{{ pricing.avg_per_user|number_format(2, ",", " ") }} zł/user</b>).
+            {% else %}
+            Przykładowe stawki łączne: <b>20 userów = 2&nbsp;400 zł</b>,
+            <b>40 = 4&nbsp;000 zł</b> (100/user), <b>60 = 5&nbsp;000 zł</b> (83,33/user),
+            <b>80 = 5&nbsp;600 zł</b> (70/user), <b>100 = 6&nbsp;000 zł</b> (60/user).
+            {% endif %}
+            <span class="savings">Im więcej userów, tym niższa średnia stawka.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========== B. Wdrożenie =========== -->
+    <div class="cost-section mt-8">
+      <h3>B. Wdrożenie aplikacji <span class="badge">jednorazowo</span></h3>
+
+      <table class="cost">
+        <thead>
+          <tr>
+            <th>Lp.</th>
+            <th>Zakres prac</th>
+            <th class="num">Roboczogodziny</th>
+            <th class="num">Stawka</th>
+            <th class="num">Wartość</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set impl_items = quote.items|items_except_categories(['LIC', 'SER']) %}
+          {% for item in impl_items %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>
+              <b>{{ item.product_name }}</b>
+              {% if item.description %}<br/><small>{{ item.description }}</small>{% endif %}
+            </td>
+            <td class="num">{{ item.quantity|number_format(0, ",", " ") }} h</td>
+            <td class="num">{{ item.unit_price|number_format(2, ",", " ") }} zł</td>
+            <td class="num">{{ item.line_total|number_format(2, ",", " ") }} zł</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            {% set impl_total = 0 %}
+            {% for it in quote.items|items_except_categories(['LIC', 'SER']) %}
+              {% set impl_total = impl_total + it.line_total %}
+            {% endfor %}
+            <td colspan="4">Razem wdrożenie (jednorazowo)</td>
+            <td class="num">{{ impl_total|number_format(2, ",", " ") }} zł</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p class="muted mt-6" style="font-size:10.5px; line-height:1.5;">
+      * Niniejsza oferta nie stanowi oferty w rozumieniu art. 66 KC i ma charakter informacyjny.
+      Ostateczny zakres i wycena wdrożenia zostaną potwierdzone w umowie ramowej oraz załączniku
+      wykonawczym (SoW). Ceny licencji obowiązują przy umowie minimum 12-miesięcznej.
+    </p>
+  </div>
+
+  <div class="pg-foot">
+    <span>Veloryn sp. z o.o. · Oferta handlowa · Dokument poufny</span>
+    <span class="pg-num"><span class="dot"></span>04 / 04</span>
+  </div>
+</section>
+
+</body>
+</html>

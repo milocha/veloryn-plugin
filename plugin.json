@@ -21,7 +21,7 @@
     }
   ],
   "permissions": [],
-  "post_install": [],
+  "post_install": ["veloryn:seed-offer-template"],
   "automation": {
     "actions": [],
     "triggers": []
